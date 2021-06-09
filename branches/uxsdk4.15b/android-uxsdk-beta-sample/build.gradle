@@ -1,0 +1,166 @@
+/*
+ * Copyright (c) 2018-2020 DJI
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    lintOptions {
+        abortOnError = false
+    }
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+    useLibrary 'org.apache.http.legacy'
+    defaultConfig {
+        applicationId "com.dji.ux.beta.sample"
+        minSdkVersion 19
+        targetSdkVersion 29
+        versionCode 1
+        versionName "5"
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+        ndk {
+            // On x86 devices that run Android API 23 or above, if the application is targeted with API 23 or
+            // above, FFmpeg lib might lead to runtime crashes or warnings.
+            abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+
+    dexOptions {
+        javaMaxHeapSize "3g"
+    }
+    lintOptions{
+        abortOnError false
+    }
+    packagingOptions{
+        doNotStrip "*/*/libdjivideo.so"
+        doNotStrip "*/*/libSDKRelativeJNI.so"
+        doNotStrip "*/*/libFlyForbid.so"
+        doNotStrip "*/*/libduml_vision_bokeh.so"
+        doNotStrip "*/*/libyuv2.so"
+        doNotStrip "*/*/libGroudStation.so"
+        doNotStrip "*/*/libFRCorkscrew.so"
+        doNotStrip "*/*/libUpgradeVerify.so"
+        doNotStrip "*/*/libFR.so"
+        doNotStrip "*/*/libDJIFlySafeCore.so"
+        doNotStrip "*/*/libdjifs_jni.so"
+        doNotStrip "*/*/libsfjni.so"
+        doNotStrip "*/*/libDJICommonJNI.so"
+        doNotStrip "*/*/libDJICSDKCommon.so"
+        doNotStrip "*/*/libDJIUpgradeCore.so"
+        doNotStrip "*/*/libDJIUpgradeJNI.so"
+        doNotStrip "*/*/libDJIWaypointV2Core.so"
+        doNotStrip "*/*/libDJIMOP.so"
+
+        pickFirst 'lib/*/libstlport_shared.so'
+        pickFirst 'lib/*/libRoadLineRebuildAPI.so'
+        pickFirst 'lib/*/libGNaviUtils.so'
+        pickFirst 'lib/*/libGNaviMapex.so'
+        pickFirst 'lib/*/libGNaviData.so'
+        pickFirst 'lib/*/libGNaviMap.so'
+        pickFirst 'lib/*/libGNaviSearch.so'
+        pickFirst 'lib/*/libDJIFlySafeCore.so'
+        pickFirst 'lib/*/libdjifs_jni.so'
+        pickFirst 'lib/*/libsfjni.so'
+        exclude 'META-INF/proguard/okhttp3.pro'
+        exclude 'META-INF/rxjava.properties'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation ('com.dji:dji-sdk:4.13', {
+        /**
+         * Comment the "library-anti-distortion" if your app needs Anti Distortion for Mavic 2 Pro
+         * and Mavic 2 Zoom.
+         * Comment the "fly-safe-database" if you don't need a smaller apk for release. When
+         * uncommented, we will download it when DJISDKManager.getInstance().registerApp
+         * is called, and it won't register success without fly-safe-database.
+         * Both will greatly reduce the size of the APK.
+         */
+        exclude module: 'library-anti-distortion'
+        exclude module: 'fly-safe-database'
+    })
+    compileOnly ('com.dji:dji-sdk-provided:4.13')
+
+    implementation 'com.amap.api:3dmap:7.5.0'
+    implementation 'com.amap.api:search:7.4.0'
+    implementation 'com.amap.api:location:5.1.0'
+    //HERE maps
+    implementation files('libs/HERE-sdk-3.15.0.aar')
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.2.1'
+
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.wire:wire-runtime:3.2.2'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.66'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.66'
+    implementation 'com.squareup.okio:okio:2.7.0'
+    implementation 'com.vividsolutions:jts:1.13'
+    implementation 'org.reactivestreams:reactive-streams:1.0.3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'com.lmax:disruptor:3.4.2'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'com.google.protobuf:protobuf-java:3.10.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'com.dji:library-anti-distortion:4.7'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.core:core:1.3.1'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.media:media:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.core:core-ktx:1.3.1"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+
+    implementation "com.uxsdk:core:1.0.1-SNAPSHOT"
+    implementation "com.uxsdk:cameracore:1.1.2"
+    implementation "com.uxsdk:hardwareaccessory:1.1.2"
+    implementation "com.uxsdk:intelligentflight:1.1.2"
+    implementation "com.uxsdk:map:1.1.2"
+    implementation "com.uxsdk:training:1.1.2"
+    implementation "com.uxsdk:visualcamera:1.1.2"
+
+    // UXSDK Modules
+}
+repositories {
+    mavenCentral()
+}
